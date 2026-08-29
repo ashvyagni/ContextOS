@@ -56,3 +56,10 @@ coverage/
 # Misc
 *.pem
 *.key
+
+# Original Replit frontend (source material, not part of monorepo)
+ContextOS-Frontend/
+
+# SQLite WAL files
+*.db-shm
+*.db-wal

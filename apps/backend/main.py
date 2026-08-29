@@ -11,6 +11,7 @@ from fastapi import FastAPI, HTTPException, Query
 
 from analyzers.contextos_parser import parse_contextos, ContextosParseError
 from analyzers.python_analyzer import analyze_project
+from analyzers.frontend_analyzer import analyze_frontend, resolve_routes_to_backend
 from graph.builder import build_graph, graph_to_nodes_edges
 from db.database import (
     init_db,
@@ -133,11 +134,29 @@ def analyze_project_endpoint(project_id: str):
         config = parse_contextos(yaml_path)
         behaviors = config["behaviors"]
 
+        # Backend analysis
         backend_dir = root_path / "backend"
         if not backend_dir.exists():
             backend_dir = root_path
 
-        all_nodes, all_edges = analyze_project(backend_dir, run_id)
+        backend_nodes, backend_edges = analyze_project(backend_dir, run_id)
+
+        # Frontend analysis (if frontend directory exists)
+        frontend_dir = root_path / "frontend"
+        frontend_nodes: list = []
+        frontend_edges: list = []
+        if frontend_dir.exists():
+            frontend_nodes, frontend_edges = analyze_frontend(frontend_dir, run_id)
+
+        # Route resolution: match frontend API calls to backend routes
+        route_resolution_edges = resolve_routes_to_backend(
+            frontend_nodes, frontend_edges, backend_nodes, run_id
+        )
+
+        # Combine all nodes and edges
+        all_nodes = backend_nodes + frontend_nodes
+        all_edges = backend_edges + frontend_edges + route_resolution_edges
+
         G = build_graph(all_nodes, all_edges, behaviors, run_id)
 
         conn = get_connection()
@@ -154,6 +173,8 @@ def analyze_project_endpoint(project_id: str):
             "nodeCount": len(persist_nodes_list),
             "edgeCount": len(persist_edges_list),
             "behaviorCount": len(behaviors),
+            "frontendNodeCount": len(frontend_nodes),
+            "routeResolutionEdgeCount": len(route_resolution_edges),
         }
 
     except ContextosParseError as e:
