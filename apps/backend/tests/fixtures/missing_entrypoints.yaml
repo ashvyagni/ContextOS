@@ -1,0 +1,5 @@
+project: banking
+
+behaviors:
+  - id: withdraw
+    name: Withdraw

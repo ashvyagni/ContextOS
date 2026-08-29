@@ -1,0 +1,14 @@
+project: banking
+
+behaviors:
+  - id: withdraw
+    name: Withdraw
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::POST /accounts/{account_id}/withdraw
+
+  - id: deposit
+    name: Deposit
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::POST /accounts/{account_id}/deposit

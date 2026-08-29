@@ -16,7 +16,11 @@
     "noUnusedLocals": true,
     "noUnusedParameters": true,
     "noFallthroughCasesInSwitch": true,
-    "noUncheckedSideEffectImports": true
+    "noUncheckedSideEffectImports": true,
+    "baseUrl": ".",
+    "paths": {
+      "@contextos/shared-types": ["../../packages/shared-types/index.ts"]
+    }
   },
   "include": ["src"]
 }

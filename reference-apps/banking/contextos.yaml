@@ -1,1 +1,32 @@
 project: banking
+
+behaviors:
+  - id: account-management
+    name: Account Management
+    category: core
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::GET /accounts
+
+  - id: withdraw
+    name: Withdraw
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::POST /accounts/{account_id}/withdraw
+
+  - id: deposit
+    name: Deposit
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::POST /accounts/{account_id}/deposit
+
+  - id: transfer
+    name: Transfer
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::POST /transfer
+
+  - id: list-transactions
+    name: List Transactions
+    category: query
+    entrypoints:
+      - backend:reference-apps/banking/backend/app.py::GET /accounts/{account_id}/transactions
