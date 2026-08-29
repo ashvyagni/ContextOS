@@ -6,8 +6,9 @@
     "declaration": true,
     "strict": true,
     "noEmit": true,
+    "allowImportingTsExtensions": true,
     "skipLibCheck": true,
     "verbatimModuleSyntax": true
   },
-  "include": ["index.ts"]
+  "include": ["*.ts"]
 }
