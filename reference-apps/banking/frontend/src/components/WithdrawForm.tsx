@@ -27,7 +27,7 @@ export function WithdrawForm() {
         amount: parseFloat(amount),
         description: description || 'Withdrawal',
       });
-      setMessage(`Withdrawal successful: ${tx.amount} from ${tx.account_id}`);
+      setMessage(`Withdrawal successful: $${tx.amount.toFixed(2)} from ${tx.account_id}`);
       setAmount('');
       setDescription('');
     } catch (e: any) {
@@ -41,27 +41,27 @@ export function WithdrawForm() {
     <div className="mx-auto max-w-2xl">
       <div className="mb-6 flex items-center justify-between gap-3">
         <div>
-          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#7b654b]">Transfer out</p>
-          <h2 className="mt-2 text-3xl text-[#171410]" style={{ fontFamily: 'Fraunces, Georgia, serif' }}>
+          <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#a89070] opacity-70">Transfer out</p>
+          <h2 className="mt-2 text-3xl text-[#f5efe5] font-display font-semibold">
             Withdraw funds
           </h2>
         </div>
-        <div className="rounded-full border border-[#d5b88f] bg-[#f0e5d5] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#5a4330]">
+        <div className="rounded-full border border-[rgba(212,175,55,0.3)] bg-[rgba(212,175,55,0.1)] px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.2em] text-[#d4af37]">
           Cash movement
         </div>
       </div>
 
-      <form onSubmit={handleWithdraw} className="space-y-5 rounded-[28px] border border-[#d9c9ae] bg-[#f9f5ee] p-5 shadow-[0_14px_28px_rgba(17,16,14,0.04)] sm:p-6">
+      <form onSubmit={handleWithdraw} className="space-y-5 glass p-5 sm:p-6">
         <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#5b4a3b]">Account</label>
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#a89070]">Account</label>
           <select
             value={accountId}
             onChange={(e) => setAccountId(e.target.value)}
-            className="w-full rounded-2xl border border-[#d9c9ae] bg-[#f5efe5] px-4 py-3 text-base text-[#171410] outline-none transition focus:border-[#9d7a45] focus:ring-4 focus:ring-[#e4d3af]"
+            className="w-full rounded-2xl border border-[rgba(212,175,55,0.15)] bg-[rgba(255,255,255,0.05)] px-4 py-3 text-base text-[#f5efe5] outline-none transition focus:border-[rgba(212,175,55,0.5)] focus:ring-2 focus:ring-[rgba(212,175,55,0.15)] cursor-pointer"
           >
-            <option value="">Select account</option>
+            <option value="" className="bg-[#1a1815]">Select account</option>
             {accounts.map((a) => (
-              <option key={a.id} value={a.id}>
+              <option key={a.id} value={a.id} className="bg-[#1a1815]">
                 {a.name} · {a.type || 'Checking'} · {a.currency} {a.balance.toFixed(2)}
               </option>
             ))}
@@ -69,9 +69,9 @@ export function WithdrawForm() {
         </div>
 
         <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#5b4a3b]">Amount</label>
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#a89070]">Amount</label>
           <div className="relative">
-            <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm font-medium text-[#5b4a3b]">
+            <span className="pointer-events-none absolute inset-y-0 left-4 flex items-center text-sm font-medium text-[#d4af37]">
               $
             </span>
             <input
@@ -80,19 +80,19 @@ export function WithdrawForm() {
               min="0"
               value={amount}
               onChange={(e) => setAmount(e.target.value)}
-              className="w-full rounded-2xl border border-[#d9c9ae] bg-[#f5efe5] py-3 pl-8 pr-4 text-base text-[#171410] outline-none transition focus:border-[#9d7a45] focus:ring-4 focus:ring-[#e4d3af]"
+              className="w-full rounded-2xl border border-[rgba(212,175,55,0.15)] bg-[rgba(255,255,255,0.05)] py-3 pl-8 pr-4 text-base text-[#f5efe5] placeholder:text-[rgba(255,255,255,0.3)] outline-none transition focus:border-[rgba(212,175,55,0.5)] focus:ring-2 focus:ring-[rgba(212,175,55,0.15)]"
               placeholder="0.00"
             />
           </div>
         </div>
 
         <div>
-          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#5b4a3b]">Description</label>
+          <label className="mb-2 block text-xs font-semibold uppercase tracking-[0.2em] text-[#a89070]">Description</label>
           <input
             type="text"
             value={description}
             onChange={(e) => setDescription(e.target.value)}
-            className="w-full rounded-2xl border border-[#d9c9ae] bg-[#f5efe5] px-4 py-3 text-base text-[#171410] outline-none transition focus:border-[#9d7a45] focus:ring-4 focus:ring-[#e4d3af]"
+            className="w-full rounded-2xl border border-[rgba(212,175,55,0.15)] bg-[rgba(255,255,255,0.05)] px-4 py-3 text-base text-[#f5efe5] placeholder:text-[rgba(255,255,255,0.3)] outline-none transition focus:border-[rgba(212,175,55,0.5)] focus:ring-2 focus:ring-[rgba(212,175,55,0.15)]"
             placeholder="e.g. Weekly transfer"
           />
         </div>
@@ -100,18 +100,18 @@ export function WithdrawForm() {
         <button
           type="submit"
           disabled={loading || !accountId || !amount}
-          className="inline-flex w-full items-center justify-center rounded-2xl bg-[#8b6e42] px-4 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#f9f5ee] transition hover:bg-[#705630] disabled:cursor-not-allowed disabled:bg-[#cabda4] disabled:text-[#5b4a3b]"
+          className="inline-flex w-full items-center justify-center rounded-2xl bg-gradient-to-r from-[#d4af37] to-[#b8960e] px-4 py-3 text-sm font-semibold uppercase tracking-[0.2em] text-[#11100e] transition hover:from-[#e8c95f] hover:to-[#d4af37] disabled:cursor-not-allowed disabled:from-[rgba(212,175,55,0.3)] disabled:to-[rgba(212,175,55,0.3)] disabled:text-[rgba(17,16,14,0.4)] cursor-pointer"
         >
           {loading ? 'Processing...' : 'Withdraw funds'}
         </button>
 
         {message && (
-          <div className="rounded-2xl border border-[#a9c6b0] bg-[#eaf4ed] px-4 py-3 text-sm font-medium text-[#204e38]">
+          <div className="rounded-2xl border border-[rgba(79,208,139,0.3)] bg-[rgba(79,208,139,0.1)] px-4 py-3 text-sm font-medium text-[#4fd08b]">
             {message}
           </div>
         )}
         {error && (
-          <div className="rounded-2xl border border-[#d7b7a4] bg-[#f6ebe2] px-4 py-3 text-sm font-medium text-[#6c3420]">
+          <div className="rounded-2xl border border-[rgba(241,107,82,0.3)] bg-[rgba(241,107,82,0.1)] px-4 py-3 text-sm font-medium text-[#f16b52]">
             {error}
           </div>
         )}

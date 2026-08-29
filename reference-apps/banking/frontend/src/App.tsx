@@ -4,10 +4,6 @@ import { WithdrawForm } from './components/WithdrawForm';
 import { DepositForm } from './components/DepositForm';
 import { TransferForm } from './components/TransferForm';
 import { TransactionList } from './components/TransactionList';
-import { CursorRevealWordmark } from './components/CursorRevealWordmark';
-import { OTPPasscodeField } from './components/OTPPasscodeField';
-import { KineticWordmark } from './components/KineticWordmark';
-import { RevealText, ScrollReveal } from './components/RevealAnimations';
 
 type Page = 'accounts' | 'withdraw' | 'deposit' | 'transfer' | 'transactions';
 
@@ -18,126 +14,23 @@ const NAV_ITEMS: { id: Page; label: string; icon: string }[] = [
   { id: 'transfer', label: 'Transfer', icon: '⇄' },
   { id: 'transactions', label: 'List Transactions', icon: '▣' },
 ];
-const prefersReducedMotion = () => {
-  if (typeof window === 'undefined') return false;
-  return window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-};
 
-interface DotGridElementProps {
-  row: number;
-  col: number;
-  mousePos?: { x: number; y: number };
-}
-
-function DotGridElement({ row, col }: DotGridElementProps) {
-  const reduceMotion = prefersReducedMotion();
-
-  if (reduceMotion) {
-    return (
-      <div
-        key={`${row}-${col}`}
-        style={{
-          position: 'absolute',
-          left: `${col * 80 + 40}px`,
-          top: `${row * 80 + 40}px`,
-          width: '4px',
-          height: '4px',
-          borderRadius: '50%',
-          backgroundColor: '#d4b98a',
-          opacity: 0.15,
-        }}
-      />
-    );
-  }
-
-  return (
-    <div
-      key={`${row}-${col}`}
-      style={{
-        position: 'absolute',
-        left: `${col * 80 + 40}px`,
-        top: `${row * 80 + 40}px`,
-        width: '4px',
-        height: '4px',
-        borderRadius: '50%',
-        backgroundColor: '#d4b98a',
-        opacity: 0.15,
-        transition: 'opacity 0.3s ease',
-      }}
-    />
-  );
-}
 export default function App() {
   const [page, setPage] = useState<Page>('accounts');
-  const [isAuthenticated, setIsAuthenticated] = useState(false);
-  const [clientId, setClientId] = useState('');
-  const [passcode, setPasscode] = useState('');
-
-  const handleLogin = (event: React.FormEvent) => {
-    event.preventDefault();
-    setIsAuthenticated(true);
-  };
-
-  if (!isAuthenticated) {
-    return (
-      <div className="flex min-h-screen items-center justify-center bg-[#11100e] px-4 py-12 text-[#1d1a17] relative overflow-hidden">
-        {/* Ambient dot-grid */}
-        <div className="absolute inset-0 pointer-events-none">
-          {Array.from({ length: 12 }).map((_, row) =>
-            Array.from({ length: 6 }).map((_, col) => (
-              <DotGridElement
-                key={`${row}-${col}`}
-                row={row}
-                col={col}
-                mousePos={clientId || passcode ? { x: 0, y: 0 } : undefined}
-              />
-            ))
-          )}
-        </div>
-
-        {/* Glassmorphic login card */}
-        <div className="w-full max-w-md glass premium-shadow-lg p-8 relative z-10">
-          <CursorRevealWordmark />
-
-          <form onSubmit={handleLogin} className="space-y-6 mt-8">
-            <div>
-              <label className="mb-2.5 block text-xs font-semibold uppercase tracking-[0.24em] text-[#8b7355] opacity-80">
-                Client ID
-              </label>
-              <input
-                value={clientId}
-                onChange={(e) => setClientId(e.target.value)}
-                className="w-full rounded-2xl border border-[rgba(212,175,55,0.2)] bg-[rgba(255,255,255,0.08)] backdrop-blur-md px-4 py-3 text-base text-[#f5efe5] placeholder-[rgba(255,255,255,0.4)] outline-none transition focus:border-[rgba(212,175,55,0.5)] focus:ring-2 focus:ring-[rgba(212,175,55,0.2)]"
-                placeholder="GRA-2048"
-              />
-            </div>
-
-            <OTPPasscodeField
-              value={passcode}
-              onChange={setPasscode}
-            />
-
-            <button
-              type="submit"
-              className="w-full rounded-2xl bg-gradient-to-r from-[#d4af37] to-[#b8960e] px-4 py-3 text-sm font-semibold uppercase tracking-[0.18em] text-[#11100e] transition hover:shadow-lg hover:from-[#e8c95f] hover:to-[#d4af37] active:scale-95"
-            >
-              Verify Identity
-            </button>
-          </form>
-
-          <div className="mt-6 border-t border-[rgba(212,175,55,0.15)] pt-4 text-center text-xs uppercase tracking-[0.2em] text-[rgba(255,255,255,0.5)]">
-            Confidential private client portal
-          </div>
-        </div>
-      </div>
-    );
-  }
 
   return (
     <div className="min-h-screen bg-[#efe7da] text-[#1d1a17]">
       <div className="mx-auto flex max-w-[1480px] gap-6 px-4 py-6 lg:px-6">
         <aside className="hidden w-[290px] shrink-0 flex-col glass premium-shadow-lg p-5 text-[#f5efe5] lg:flex">
-          <KineticWordmark />
+          <div className="flex items-center gap-3">
+            <div className="flex h-10 w-10 items-center justify-center rounded-xl bg-gradient-to-br from-[#d4af37] to-[#b8960e] text-sm font-bold text-[#11100e]">
+              C
+            </div>
+            <div>
+              <p className="text-sm font-semibold text-[#f5efe5] tracking-wide">ContextOS</p>
+              <p className="text-[10px] uppercase tracking-[0.2em] text-[rgba(255,255,255,0.5)]">Private Banking</p>
+            </div>
+          </div>
 
           <nav className="mt-6 space-y-1.5">
             {NAV_ITEMS.map((item) => {
@@ -147,7 +40,7 @@ export default function App() {
                   key={item.id}
                   type="button"
                   onClick={() => setPage(item.id)}
-                  className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition-all duration-200 ${
+                  className={`flex w-full items-center gap-3 rounded-2xl px-3 py-2.5 text-left text-sm font-medium transition-all duration-200 cursor-pointer ${
                     active
                       ? 'bg-[rgba(212,175,55,0.2)] text-[#f5efe5] ring-1 ring-[rgba(212,175,55,0.3)]'
                       : 'text-[rgba(255,255,255,0.6)] hover:bg-[rgba(212,175,55,0.08)] hover:text-[#f5efe5]'
@@ -172,12 +65,7 @@ export default function App() {
             </p>
             <div className="mt-3 flex items-end justify-between">
               <div>
-                <p
-                  className="text-2xl text-[#f5efe5]"
-                  style={{ fontFamily: 'Fraunces, Georgia, serif' }}
-                >
-                  92%
-                </p>
+                <p className="text-2xl text-[#f5efe5] font-display">92%</p>
                 <p className="text-xs text-[rgba(255,255,255,0.5)]">Protected</p>
               </div>
               <div className="rounded-full border border-[#d4af37] bg-[rgba(212,175,55,0.1)] px-2.5 py-1 text-xs font-medium text-[#d4af37]">
@@ -194,11 +82,8 @@ export default function App() {
                 <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#a89070] opacity-70">
                   Client overview
                 </p>
-                <h1
-                  className="mt-2 text-3xl text-[#f5efe5] sm:text-4xl"
-                  style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}
-                >
-                  <RevealText>Wealth dashboard</RevealText>
+                <h1 className="mt-2 text-3xl text-[#f5efe5] sm:text-4xl font-display font-semibold">
+                  Wealth dashboard
                 </h1>
               </div>
 
@@ -220,7 +105,7 @@ export default function App() {
                 key={item.id}
                 type="button"
                 onClick={() => setPage(item.id)}
-                className={`shrink-0 rounded-xl px-3 py-2 text-sm font-medium transition-colors ${
+                className={`shrink-0 rounded-xl px-3 py-2 text-sm font-medium transition-colors cursor-pointer ${
                   page === item.id ? 'bg-[#d4af37] text-[#11100e]' : 'glass-dark text-[#d4af37]'
                 }`}
               >

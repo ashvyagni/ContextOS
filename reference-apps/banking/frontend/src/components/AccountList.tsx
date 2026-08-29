@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from 'react';
 import { fetchAccounts, type Account } from '../api';
-import { ScrollReveal } from './RevealAnimations';
 
 const TYPE_OPTIONS = ['All', 'Checking', 'Savings', 'Investment', 'Business', 'Joint'];
 
@@ -82,13 +81,15 @@ export function AccountList() {
       <div className="flex flex-col gap-3 lg:flex-row lg:items-end lg:justify-between">
         <div>
           <p className="text-[11px] font-semibold uppercase tracking-[0.28em] text-[#a89070] opacity-70">Overview</p>
-          <h2 className="mt-2 text-3xl text-[#f5efe5]" style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}>
+          <h2 className="mt-2 text-3xl text-[#f5efe5] font-display font-semibold">
             Accounts
           </h2>
         </div>
 
         <div className="flex w-full max-w-md items-center gap-2 glass px-3 py-2.5">
-          <span className="text-lg text-[#d4af37]">⌕</span>
+          <svg className="h-4 w-4 text-[#d4af37]" fill="none" viewBox="0 0 24 24" stroke="currentColor" strokeWidth={2}>
+            <path strokeLinecap="round" strokeLinejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
           <input
             value={query}
             onChange={(event) => setQuery(event.target.value)}
@@ -104,7 +105,7 @@ export function AccountList() {
             key={type}
             type="button"
             onClick={() => setActiveType(type)}
-            className={`rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] transition ${
+            className={`cursor-pointer rounded-full border px-3 py-1.5 text-xs font-semibold uppercase tracking-[0.18em] transition ${
               activeType === type
                 ? 'border-[#d4af37] bg-gradient-to-r from-[#d4af37] to-[#b8960e] text-[#11100e]'
                 : 'border-[rgba(212,175,55,0.2)] bg-[rgba(212,175,55,0.08)] text-[#d4af37]'
@@ -118,19 +119,19 @@ export function AccountList() {
       <div className="grid gap-4 md:grid-cols-3">
         <div className="glass-dark p-5 text-[#f5efe5]">
           <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#d4af37] opacity-80">Total balance</p>
-          <p className="mt-3 text-3xl text-[#f5efe5]" style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}>
+          <p className="mt-3 text-3xl text-[#f5efe5] font-display font-semibold">
             {formatMoney('USD', totalBalance)}
           </p>
         </div>
         <div className="glass p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a89070] opacity-70">Monthly activity</p>
-          <p className="mt-3 text-3xl text-[#f5efe5]" style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}>
+          <p className="mt-3 text-3xl text-[#f5efe5] font-display font-semibold">
             {formatMoney('USD', totalBalance * 0.08)}
           </p>
         </div>
         <div className="glass p-5">
           <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a89070] opacity-70">Average balance</p>
-          <p className="mt-3 text-3xl text-[#f5efe5]" style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}>
+          <p className="mt-3 text-3xl text-[#f5efe5] font-display font-semibold">
             {formatMoney('USD', avgBalance)}
           </p>
         </div>
@@ -138,19 +139,18 @@ export function AccountList() {
 
       <div className="space-y-5">
         {Object.entries(groupedAccounts).map(([type, items], groupIndex) => (
-          <ScrollReveal key={type} delay={groupIndex * 0.1}>
-            <section className="space-y-4">
-              <div className="flex items-center justify-between">
-                <h3 className="text-xs font-semibold uppercase tracking-[0.26em] text-[#a89070] opacity-70">{type}</h3>
-                <span className="glass px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d4af37]">
-                  {items.length} accounts
-                </span>
-              </div>
+          <section key={type} className="space-y-4">
+            <div className="flex items-center justify-between">
+              <h3 className="text-xs font-semibold uppercase tracking-[0.26em] text-[#a89070] opacity-70">{type}</h3>
+              <span className="glass px-2.5 py-1 text-[10px] font-semibold uppercase tracking-[0.18em] text-[#d4af37]">
+                {items.length} accounts
+              </span>
+            </div>
 
-              <div className="space-y-4">
-                {items.map((account, itemIndex) => (
-                  <ScrollReveal key={account.id} delay={itemIndex * 0.05}>
+            <div className="space-y-4">
+              {items.map((account) => (
                 <article
+                  key={account.id}
                   className="overflow-hidden glass premium-shadow p-5"
                 >
                   <div className="flex flex-col gap-4 sm:flex-row sm:items-center sm:justify-between">
@@ -171,7 +171,7 @@ export function AccountList() {
 
                     <div className="text-left sm:text-right">
                       <p className="text-[10px] font-semibold uppercase tracking-[0.24em] text-[#a89070] opacity-70">Available</p>
-                      <p className="mt-2 text-3xl text-[#f5efe5]" style={{ fontFamily: 'Fraunces, Georgia, serif', fontWeight: 600 }}>
+                      <p className="mt-2 text-3xl text-[#f5efe5] font-display font-semibold">
                         {formatMoney(account.currency, account.balance)}
                       </p>
                     </div>
@@ -182,11 +182,9 @@ export function AccountList() {
                     <span>{account.currency}</span>
                   </div>
                 </article>
-                  </ScrollReveal>
-                ))}
-              </div>
-            </section>
-          </ScrollReveal>
+              ))}
+            </div>
+          </section>
         ))}
       </div>
     </div>
