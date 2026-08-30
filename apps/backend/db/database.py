@@ -30,14 +30,14 @@ def init_db(conn) -> None:
     with conn.cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS projects (
-                id TEXT NOT NULL,
+                id TEXT PRIMARY KEY,
                 name TEXT NOT NULL,
                 root_path TEXT NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT NOW()
             );
 
             CREATE TABLE IF NOT EXISTS analysis_runs (
-                id TEXT NOT NULL,
+                id TEXT PRIMARY KEY,
                 project_id TEXT NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
                 status TEXT NOT NULL DEFAULT 'pending',
@@ -56,6 +56,7 @@ def init_db(conn) -> None:
                 language TEXT NOT NULL,
                 behavior_id TEXT,
                 metadata TEXT NOT NULL DEFAULT '{}',
+                PRIMARY KEY (id, analysis_run_id),
                 FOREIGN KEY (analysis_run_id) REFERENCES analysis_runs(id)
             );
 
