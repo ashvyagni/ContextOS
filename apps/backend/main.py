@@ -79,6 +79,17 @@ def _register_projects() -> None:
 
 def _run_analysis(project_id: str, changed_files: list[str] | None = None) -> dict:
     """Core analysis pipeline. Returns analysis result dict."""
+    if not PROJECT_REGISTRY or project_id not in PROJECT_REGISTRY:
+        _register_projects()
+        conn = get_connection()
+        init_db(conn)
+        for pid, info in PROJECT_REGISTRY.items():
+            upsert_project(conn, info["id"], info["name"], info["rootPath"])
+        conn.close()
+
+    if project_id not in PROJECT_REGISTRY:
+        raise HTTPException(status_code=404, detail=f"Project '{project_id}' not found")
+
     project_info = PROJECT_REGISTRY[project_id]
     root_path = Path(project_info["rootPath"])
     yaml_path = root_path / "contextos.yaml"

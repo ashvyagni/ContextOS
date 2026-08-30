@@ -765,16 +765,20 @@ export default function Workspace({ username }: { username: string }) {
               </div>
             ) : error ? (
               <div className="flex flex-col items-center justify-center h-full gap-4">
-                <div className="text-[#fca5a5] font-mono text-sm">{error}</div>
-                <div className="text-zinc-600 text-xs font-mono">
-                  Start the ContextOS backend on :8000, then click Analyze
+                <Network className="w-12 h-12 text-zinc-700" />
+                <div className="text-zinc-400 font-mono text-sm text-center">
+                  {error.includes('404') ? 'No graph data loaded yet.' : error}
+                  <br />
+                  <span className="text-zinc-600 text-xs font-mono">
+                    Click Analyze to generate the behavioral graph.
+                  </span>
                 </div>
                 <button
                   onClick={handleAnalyze}
                   disabled={isAnalyzing}
                   className="mt-2 bg-[#a5f3fc] text-black px-6 py-2 font-black text-xs border-2 border-black hover:bg-white transition-colors"
                 >
-                  Analyze Now
+                  {isAnalyzing ? 'ANALYZING...' : 'ANALYZE NOW'}
                 </button>
               </div>
             ) : rfNodes.length === 0 ? (

@@ -78,6 +78,7 @@ def init_db(conn) -> None:
                 name TEXT NOT NULL,
                 category TEXT NOT NULL DEFAULT '',
                 entrypoints TEXT NOT NULL DEFAULT '[]',
+                PRIMARY KEY (id, project_id),
                 FOREIGN KEY (project_id) REFERENCES projects(id)
             );
 
@@ -328,7 +329,7 @@ def persist_behaviors(
             cur,
             """INSERT INTO behaviors (id, project_id, name, category, entrypoints)
                VALUES (%(id)s, %(project_id)s, %(name)s, %(category)s, %(entrypoints)s)
-               ON CONFLICT (id) DO UPDATE SET
+               ON CONFLICT (id, project_id) DO UPDATE SET
                    name = EXCLUDED.name,
                    category = EXCLUDED.category,
                    entrypoints = EXCLUDED.entrypoints""",
