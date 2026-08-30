@@ -18,11 +18,13 @@ def build_graph(
     G = nx.DiGraph()
 
     # Add behavior nodes from contextos.yaml
+    # Use analysis_run_id in the node ID to avoid collisions across runs
     if behaviors:
         for b in behaviors:
+            behavior_node_id = f"behavior:{b['id']}:{analysis_run_id}"
             G.add_node(
-                f"behavior:{b['id']}",
-                id=f"behavior:{b['id']}",
+                behavior_node_id,
+                id=behavior_node_id,
                 type="behavior",
                 name=b["name"],
                 file="",
@@ -54,7 +56,7 @@ def build_graph(
     # Add behavior IMPLEMENTS edges: route nodes -> behavior nodes
     if behaviors:
         for b in behaviors:
-            behavior_node_id = f"behavior:{b['id']}"
+            behavior_node_id = f"behavior:{b['id']}:{analysis_run_id}"
             for ep in b.get("entrypoints", []):
                 # Match entrypoints like "backend:path::METHOD /route"
                 if "::" in ep:
@@ -76,16 +78,23 @@ def build_graph(
     # Add graph edges — create stub nodes for external references
     node_ids = {n["id"] for n in nodes}
     if behaviors:
-        node_ids.update(f"behavior:{b['id']}" for b in behaviors)
+        node_ids.update(f"behavior:{b['id']}:{analysis_run_id}" for b in behaviors)
 
     for e in edges:
         # Add stub node for external targets not already in the graph
-        if e["target"] not in node_ids:
+        # Use analysis_run_id in external node IDs to avoid collisions across runs
+        target_id = e["target"]
+        if target_id not in node_ids:
+            if target_id.startswith("external:"):
+                run_unique_id = f"{target_id}:{analysis_run_id}"
+            else:
+                run_unique_id = target_id
+
             G.add_node(
-                e["target"],
-                id=e["target"],
+                run_unique_id,
+                id=run_unique_id,
                 type="external",
-                name=e["target"].replace("external:", ""),
+                name=target_id.replace("external:", ""),
                 file="",
                 lineStart=0,
                 lineEnd=0,
@@ -94,11 +103,19 @@ def build_graph(
                 analysisRunId=e["analysisRunId"],
                 metadata={},
             )
-            node_ids.add(e["target"])
+            node_ids.add(run_unique_id)
+        else:
+            run_unique_id = target_id
+
+        # Also check if source needs remapping for behavior nodes
+        source_id = e["source"]
+        if source_id.startswith("behavior:"):
+            # behavior source IDs are already run-unique from the behavior node creation
+            pass
 
         G.add_edge(
             e["source"],
-            e["target"],
+            run_unique_id,
             id=e["id"],
             type=e["type"],
             confidence=e["confidence"],

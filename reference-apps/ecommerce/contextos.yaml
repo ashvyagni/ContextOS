@@ -1,1 +1,28 @@
 project: ecommerce
+
+behaviors:
+  - id: product-browsing
+    name: Product Browsing
+    category: core
+    entrypoints:
+      - backend:reference-apps/ecommerce/backend/main.py::GET /products
+      - backend:reference-apps/ecommerce/backend/main.py::GET /products/{product_id}
+
+  - id: cart-management
+    name: Cart Management
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/ecommerce/backend/main.py::POST /cart
+
+  - id: checkout
+    name: Checkout
+    category: transaction
+    entrypoints:
+      - backend:reference-apps/ecommerce/backend/main.py::POST /checkout
+      - backend:reference-apps/ecommerce/backend/main.py::POST /coupon
+
+  - id: user-auth
+    name: User Authentication
+    category: core
+    entrypoints:
+      - backend:reference-apps/ecommerce/backend/main.py::POST /login

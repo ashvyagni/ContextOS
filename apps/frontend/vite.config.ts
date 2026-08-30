@@ -13,9 +13,13 @@ export default defineConfig({
   server: {
     port: 5173,
     proxy: {
-      "/projects": "http://localhost:8000",
-      "/nodes": "http://localhost:8000",
-      "/health": "http://localhost:8000",
+      // ContextOS backend — all API paths
+      "/projects":  "http://localhost:8000",
+      "/nodes":     "http://localhost:8000",
+      "/health":    "http://localhost:8000",
+      "/watcher":   "http://localhost:8000",
+      "/scenarios": "http://localhost:8000",
+      "/evidence":  "http://localhost:8000",
     },
   },
 });

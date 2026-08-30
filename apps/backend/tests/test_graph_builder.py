@@ -42,7 +42,7 @@ class TestGraphBuilder:
     def test_behavior_node_has_correct_id(self):
         nodes, edges, behaviors = self._get_analysis()
         G = build_graph(nodes, edges, behaviors, "run-gb")
-        assert "behavior:withdraw" in G.nodes
+        assert "behavior:withdraw:run-gb" in G.nodes
 
     def test_graph_node_count(self):
         nodes, edges, behaviors = self._get_analysis()
