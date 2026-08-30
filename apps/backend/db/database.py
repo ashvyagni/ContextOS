@@ -30,14 +30,14 @@ def init_db(conn) -> None:
     with conn.cursor() as cur:
         cur.execute("""
             CREATE TABLE IF NOT EXISTS projects (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 name TEXT NOT NULL,
                 root_path TEXT NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT NOW()
             );
 
             CREATE TABLE IF NOT EXISTS analysis_runs (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 project_id TEXT NOT NULL,
                 created_at TIMESTAMP NOT NULL DEFAULT NOW(),
                 status TEXT NOT NULL DEFAULT 'pending',
@@ -46,7 +46,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS graph_nodes (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 analysis_run_id TEXT NOT NULL,
                 type TEXT NOT NULL,
                 name TEXT NOT NULL,
@@ -60,7 +60,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS graph_edges (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 analysis_run_id TEXT NOT NULL,
                 source TEXT NOT NULL,
                 target TEXT NOT NULL,
@@ -72,7 +72,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS behaviors (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 project_id TEXT NOT NULL,
                 name TEXT NOT NULL,
                 category TEXT NOT NULL DEFAULT '',
@@ -81,7 +81,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS change_sets (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 analysis_run_id TEXT NOT NULL,
                 changed_files TEXT NOT NULL DEFAULT '[]',
                 added_node_ids TEXT NOT NULL DEFAULT '[]',
@@ -93,7 +93,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS impact_reports (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 change_set_id TEXT NOT NULL,
                 affected_behavior_ids TEXT NOT NULL DEFAULT '[]',
                 affected_node_ids TEXT NOT NULL DEFAULT '[]',
@@ -104,7 +104,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS scenario_results (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 scenario_id TEXT NOT NULL,
                 analysis_run_id TEXT NOT NULL,
                 status TEXT NOT NULL,
@@ -116,7 +116,7 @@ def init_db(conn) -> None:
             );
 
             CREATE TABLE IF NOT EXISTS evidence (
-                id TEXT PRIMARY KEY,
+                id TEXT NOT NULL,
                 scenario_result_id TEXT,
                 capability_candidate_id TEXT,
                 summary TEXT NOT NULL,

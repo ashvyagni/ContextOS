@@ -22,8 +22,7 @@ def withdraw(account_id: str, amount: float, description: str = "") -> Transacti
     account = accounts_db[account_id]
     if amount <= 0:
         raise ValueError("Amount must be positive")
-    if account.balance < amount:
-        raise ValueError("Insufficient funds")
+    
     account.balance -= amount
     global _next_tx_id
     tx = Transaction(

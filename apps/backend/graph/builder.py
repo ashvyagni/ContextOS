@@ -21,7 +21,7 @@ def build_graph(
     # Use analysis_run_id in the node ID to avoid collisions across runs
     if behaviors:
         for b in behaviors:
-            behavior_node_id = f"behavior:{b['id']}:{analysis_run_id}"
+            behavior_node_id = f"behavior:{b['id']}"
             G.add_node(
                 behavior_node_id,
                 id=behavior_node_id,
@@ -56,7 +56,7 @@ def build_graph(
     # Add behavior IMPLEMENTS edges: route nodes -> behavior nodes
     if behaviors:
         for b in behaviors:
-            behavior_node_id = f"behavior:{b['id']}:{analysis_run_id}"
+            behavior_node_id = f"behavior:{b['id']}"
             for ep in b.get("entrypoints", []):
                 # Match entrypoints like "backend:path::METHOD /route"
                 if "::" in ep:
@@ -78,7 +78,7 @@ def build_graph(
     # Add graph edges — create stub nodes for external references
     node_ids = {n["id"] for n in nodes}
     if behaviors:
-        node_ids.update(f"behavior:{b['id']}:{analysis_run_id}" for b in behaviors)
+        node_ids.update(f"behavior:{b['id']}" for b in behaviors)
 
     for e in edges:
         # Add stub node for external targets not already in the graph
@@ -86,7 +86,7 @@ def build_graph(
         target_id = e["target"]
         if target_id not in node_ids:
             if target_id.startswith("external:"):
-                run_unique_id = f"{target_id}:{analysis_run_id}"
+                run_unique_id = target_id
             else:
                 run_unique_id = target_id
 

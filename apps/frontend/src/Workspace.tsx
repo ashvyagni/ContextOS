@@ -512,6 +512,19 @@ export default function Workspace({ username }: { username: string }) {
     } catch (e) { console.error('Watcher toggle failed:', e) }
   }, [selectedProjectId, watcherActive])
 
+  // ── watcher polling ──
+  useEffect(() => {
+    if (!watcherActive) return
+    const interval = setInterval(() => {
+      reload()
+      reloadImpact()
+      reloadExplanation()
+      reloadScenarioResults()
+      reloadEvidence()
+    }, 2000)
+    return () => clearInterval(interval)
+  }, [watcherActive, reload, reloadImpact, reloadExplanation, reloadScenarioResults, reloadEvidence])
+
   // ── derived ──
   const nodeCount = graphData?.nodes.length || 0
   const edgeCount = graphData?.edges.length || 0

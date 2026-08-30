@@ -10,13 +10,18 @@ import { randomUUID } from "crypto";
 const projectRoot = process.argv[2] || ".";
 const analysisRunId = process.argv[3] || "unknown";
 
+import crypto from "crypto";
+function stableId(...parts) {
+  const key = parts.join("|");
+  return crypto.createHash("md5").update(key).digest("hex").slice(0, 12);
+}
 function genId() {
   return randomUUID().replace(/-/g, "").slice(0, 12);
 }
 
 function makeNode(type, name, file, lineStart, lineEnd, lang, runId, meta = {}) {
   return {
-    id: genId(),
+    id: (typeof file !== "undefined") ? stableId(file, name, type) : stableId(source, target, edgeType),
     type,
     name,
     file,
@@ -30,7 +35,7 @@ function makeNode(type, name, file, lineStart, lineEnd, lang, runId, meta = {}) 
 
 function makeEdge(source, target, edgeType, confidence, runId, sourceRef, meta = {}) {
   return {
-    id: genId(),
+    id: (typeof file !== "undefined") ? stableId(file, name, type) : stableId(source, target, edgeType),
     source,
     target,
     type: edgeType,

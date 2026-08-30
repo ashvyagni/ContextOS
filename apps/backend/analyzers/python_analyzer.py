@@ -6,6 +6,12 @@ from pathlib import Path
 from typing import Any
 
 
+import hashlib
+
+def _stable_id(*parts: str) -> str:
+    key = "|".join(str(p) for p in parts)
+    return hashlib.md5(key.encode()).hexdigest()[:12]
+
 def _gen_id() -> str:
     return uuid.uuid4().hex[:12]
 
@@ -23,7 +29,7 @@ def _make_node(
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {
-        "id": _gen_id(),
+        "id": _stable_id(file, name, type_) if "file" in locals() else _stable_id(source, target, edge_type),
         "type": type_,
         "name": name,
         "file": file,
@@ -47,7 +53,7 @@ def _make_edge(
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
     return {
-        "id": _gen_id(),
+        "id": _stable_id(file, name, type_) if "file" in locals() else _stable_id(source, target, edge_type),
         "source": source,
         "target": target,
         "type": edge_type,
