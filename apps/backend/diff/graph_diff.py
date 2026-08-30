@@ -31,9 +31,8 @@ def compute_changeset(
         new_n = new_node_map[nid]
         if (
             old_n.get("file") != new_n.get("file")
-            or old_n.get("lineStart") != new_n.get("lineStart")
-            or old_n.get("lineEnd") != new_n.get("lineEnd")
             or old_n.get("name") != new_n.get("name")
+            or old_n.get("contentHash") != new_n.get("contentHash")
         ):
             modified_node_ids.append(nid)
 

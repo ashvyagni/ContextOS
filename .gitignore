@@ -63,3 +63,9 @@ ContextOS-Frontend/
 # SQLite WAL files
 *.db-shm
 *.db-wal
+
+# Temporary verification & transcript artifacts
+screenshot.png
+session-*.md
+*.png
+

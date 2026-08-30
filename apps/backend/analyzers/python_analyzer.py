@@ -25,6 +25,7 @@ def _make_node(
     line_end: int,
     language: str,
     analysis_run_id: str,
+    content_hash: str | None = None,
     behavior_id: str | None = None,
     metadata: dict[str, Any] | None = None,
 ) -> dict[str, Any]:
@@ -38,6 +39,7 @@ def _make_node(
         "language": language,
         "behaviorId": behavior_id,
         "analysisRunId": analysis_run_id,
+        "contentHash": content_hash or _stable_id(file, name, type_),
         "metadata": metadata or {},
     }
 
@@ -152,6 +154,7 @@ def analyze_file(
                     line_end=_get_function_body_end(node),
                     language="python",
                     analysis_run_id=analysis_run_id,
+                    content_hash=hashlib.md5(ast.dump(node).encode()).hexdigest(),
                 )
                 nodes.append(route_node)
 
@@ -163,6 +166,7 @@ def analyze_file(
                     line_end=node.end_lineno or node.lineno,
                     language="python",
                     analysis_run_id=analysis_run_id,
+                    content_hash=hashlib.md5(ast.dump(node).encode()).hexdigest(),
                 )
                 nodes.append(handler_node)
                 defined_functions[node.name] = handler_node
@@ -201,6 +205,7 @@ def analyze_file(
                 line_end=node.end_lineno or node.lineno,
                 language="python",
                 analysis_run_id=analysis_run_id,
+                content_hash=hashlib.md5(ast.dump(node).encode()).hexdigest(),
             )
             nodes.append(func_node)
             defined_functions[node.name] = func_node
@@ -235,6 +240,7 @@ def analyze_file(
                 line_end=node.end_lineno or node.lineno,
                 language="python",
                 analysis_run_id=analysis_run_id,
+                content_hash=hashlib.md5(ast.dump(node).encode()).hexdigest(),
             )
             nodes.append(svc_node)
 

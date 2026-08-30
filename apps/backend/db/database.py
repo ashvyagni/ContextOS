@@ -234,7 +234,7 @@ def persist_nodes(
                     "line_end": n["lineEnd"],
                     "language": n["language"],
                     "behavior_id": n.get("behaviorId"),
-                    "metadata": json.dumps(n.get("metadata", {})),
+                    "metadata": json.dumps({**n.get("metadata", {}), "contentHash": n.get("contentHash")}),
                 }
                 for n in nodes
             ],
@@ -247,8 +247,10 @@ def get_nodes_for_run(conn, analysis_run_id: str) -> list[dict[str, Any]]:
         cur.execute(
             "SELECT * FROM graph_nodes WHERE analysis_run_id = %s", (analysis_run_id,)
         )
-        return [
-            {
+        nodes = []
+        for r in cur.fetchall():
+            meta = json.loads(r["metadata"])
+            nodes.append({
                 "id": r["id"],
                 "type": r["type"],
                 "name": r["name"],
@@ -258,10 +260,10 @@ def get_nodes_for_run(conn, analysis_run_id: str) -> list[dict[str, Any]]:
                 "language": r["language"],
                 "behaviorId": r["behavior_id"],
                 "analysisRunId": r["analysis_run_id"],
-                "metadata": json.loads(r["metadata"]),
-            }
-            for r in cur.fetchall()
-        ]
+                "contentHash": meta.get("contentHash"),
+                "metadata": meta,
+            })
+        return nodes
 
 
 # --- Graph Edges ---
